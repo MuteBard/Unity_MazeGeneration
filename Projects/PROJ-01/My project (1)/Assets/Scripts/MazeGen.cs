@@ -2,12 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class MapLocation
+{
+    public int x;
+    public int z;
+    public MapLocation(int x, int z){
+        this.x = x;
+        this.z = z;
+    }
+}
 public class MazeGen : MonoBehaviour
 {
     public int width = 30; // x length
     public int depth = 30; // z length
     public int probability = 50;
     public byte [,] map;
+    public int scale = 6;
     void Start()
     {
         InitializeMap();
@@ -40,9 +50,10 @@ public class MazeGen : MonoBehaviour
     void DrawMap(){
         for(int z = 0; z < depth; z++) {
             for(int x = 0; x < width; x++) {
-                Vector3 pos = new Vector3(x, 0, z);
+                Vector3 pos = new Vector3(x * scale, 0, z * scale);
                 if(map[x, z] == 1){
                     GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    wall.transform.localScale = new Vector3(scale, scale, scale);
                     wall.transform.position = pos;
                 }
             }
