@@ -59,10 +59,28 @@ public class MazeGen : MonoBehaviour
             }
         }
     }
+    public int CountSquareNeighbors(int x, int z){
+        int neighbors = 0;
+        if( x <= 0 || x >= width - 1 || z <= 0 || z >= depth - 1) return 5;
+        if (map[x-1,z] == 0) neighbors++; //N
+        if (map[x,z+1] == 0) neighbors++; //W
+        if (map[x,z-1] == 0) neighbors++; //E
+        if (map[x+1,z] == 0) neighbors++; //S
+        return neighbors ;
+    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public int CountDiagonalNeighbors(int x, int z){
+        int neighbors = 0;
+        if( x <= 0 || x >= width - 1 || z <= 0 || z >= depth - 1) return 5;
+        if (map[x-1,z-1] == 0) neighbors++; //NW
+        if (map[x-1,z+1] == 0) neighbors++; //NE
+        if (map[x+1,z-1] == 0) neighbors++; //SW
+        if (map[x+1,z+1] == 0) neighbors++; //SE
+        return neighbors ;
+    }
+
+    public int CountAllNeighbors(int x, int z){
+        return CountSquareNeighbors(x, z) + CountDiagonalNeighbors(x, z);
     }
 }
+
