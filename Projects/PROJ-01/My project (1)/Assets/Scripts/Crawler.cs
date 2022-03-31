@@ -6,12 +6,16 @@ using UnityEngine;
 
 public class Crawler : MazeGen
 {
+    public int maxPasses = 10;
+    int passes = 0;
     public override void Generate(){
         
         // CrawlRandom();
-        PrimsCrawl();
+        // PrimsCrawl();
         // RestrictedCrawlX();
         // RestrictedCrawlZ();
+        RecursiveCrawl();
+        RecursiveCrawl();
 
     }
     public void CrawlRandom(){
@@ -159,7 +163,53 @@ public class Crawler : MazeGen
         } 
     }
 
-    public string GetKey(int x, int z) {
+    private string GetKey(int x, int z) {
         return $"{x},{z}";
+    }
+
+    public void RecursiveCrawl(){
+        int x = UnityEngine.Random.Range(1, width);
+        int z = UnityEngine.Random.Range(1, depth);
+        MapLocation ml = new MapLocation(x, z);
+        passes = 0;
+        InnerRecursiveCrawl(ml);
+    }
+
+    private void InnerRecursiveCrawl(MapLocation ml){
+        if (passes >= maxPasses) return;
+        if (CountSquareCorridors(ml.x, ml.z) >= 2) return;
+        
+        map[ml.x, ml.z] = 0;
+        List<MapLocation> shuffledML = ShuffleNewMapLocations(ml.x, ml.z);
+        InnerRecursiveCrawl(shuffledML[0]);
+        InnerRecursiveCrawl(shuffledML[1]);
+        InnerRecursiveCrawl(shuffledML[2]);
+        InnerRecursiveCrawl(shuffledML[3]);
+        passes++;
+        
+    }
+
+    private List<MapLocation> ShuffleNewMapLocations(int x, int z){
+        List<MapLocation> mapLocations = new List<MapLocation>(){
+            new MapLocation(x + 1, z),
+            new MapLocation(x - 1, z),
+            new MapLocation(x, z + 1),
+            new MapLocation(x, z - 1)
+        };
+        List<MapLocation> shuffledMapLocations = new List<MapLocation>();
+
+        while(mapLocations.Count() > 0){
+           int index = UnityEngine.Random.Range(0, mapLocations.Count);
+           shuffledMapLocations.Add(mapLocations[index]);
+           mapLocations.RemoveAt(index);
+        }
+
+        return shuffledMapLocations;
+    }
+
+    private void PrintList(List<MapLocation> list){
+        for (int i = 0; i < list.Count(); i++){
+            Debug.Log(list[i].Show());
+        }
     }
 }

@@ -10,6 +10,9 @@ public class MapLocation
         this.x = x;
         this.z = z;
     }
+    public string Show(){
+        return $"x:{x}, z:{z}";
+    }
 }
 
 public class MazeGen : MonoBehaviour
