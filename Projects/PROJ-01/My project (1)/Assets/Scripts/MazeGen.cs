@@ -11,11 +11,12 @@ public class MapLocation
         this.z = z;
     }
 }
+
 public class MazeGen : MonoBehaviour
 {
     public int width = 30; // x length
     public int depth = 30; // z length
-    public int probability = 50;
+    public int probability = 0;
     public byte [,] map;
     public int scale = 6;
     void Start()
@@ -59,28 +60,44 @@ public class MazeGen : MonoBehaviour
             }
         }
     }
-    public int CountSquareNeighbors(int x, int z){
+    public int CountSquareCorridors(int x, int z){
         int neighbors = 0;
-        if( x <= 0 || x >= width - 1 || z <= 0 || z >= depth - 1) return 5;
-        if (map[x-1,z] == 0) neighbors++; //N
-        if (map[x,z+1] == 0) neighbors++; //W
-        if (map[x,z-1] == 0) neighbors++; //E
-        if (map[x+1,z] == 0) neighbors++; //S
-        return neighbors ;
+        if (x <= 0 || x >= width - 1 || z <= 0 || z >= depth - 1) return 100;
+        if (map[x - 1, z] == 0) neighbors++; //N
+        if (map[x + 1, z] == 0) neighbors++; //S
+        if (map[x, z + 1] == 0) neighbors++; //W
+        if (map[x, z - 1] == 0) neighbors++; //E
+        
+        return neighbors;
     }
 
-    public int CountDiagonalNeighbors(int x, int z){
+    public int CountDiagonalCorridors(int x, int z){
         int neighbors = 0;
-        if( x <= 0 || x >= width - 1 || z <= 0 || z >= depth - 1) return 5;
-        if (map[x-1,z-1] == 0) neighbors++; //NW
-        if (map[x-1,z+1] == 0) neighbors++; //NE
-        if (map[x+1,z-1] == 0) neighbors++; //SW
-        if (map[x+1,z+1] == 0) neighbors++; //SE
-        return neighbors ;
+        if (x <= 0 || x >= width - 1 || z <= 0 || z >= depth - 1) return 100;
+        if (map[x - 1, z - 1] == 0) neighbors++; //NW
+        if (map[x + 1, z + 1] == 0) neighbors++; //SE
+        if (map[x - 1, z + 1] == 0) neighbors++; //NE
+        if (map[x + 1, z - 1] == 0) neighbors++; //SW
+    
+        return neighbors;
     }
 
-    public int CountAllNeighbors(int x, int z){
-        return CountSquareNeighbors(x, z) + CountDiagonalNeighbors(x, z);
+// https://stackoverflow.com/questions/32911977/prevent-autocomplete-in-visual-studio-code
+    public void debugging (int x, int z){
+        Debug.Log("_______________");
+        Debug.Log($"Center {x},{z}");
+        Debug.Log($"N {x - 1},{z}");
+        Debug.Log($"S {x + 1},{z}");
+        Debug.Log($"W {x},{z + 1}");
+        Debug.Log($"E {x},{z - 1}");
+        Debug.Log($"NW {x - 1},{z - 1}");
+        Debug.Log($"SE {x + 1},{z + 1}");
+        Debug.Log($"NE {x - 1},{z + 1}");
+        Debug.Log($"SW {x + 1},{z - 1}");
+    }
+
+    public int CountAllCorridors(int x, int z){
+        return CountSquareCorridors(x, z) + CountDiagonalCorridors(x, z);
     }
 }
 
